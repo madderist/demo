@@ -1,0 +1,40 @@
+steps:
+  # 1. Initialize Terraform
+  # This step downloads the necessary provider plugins and configures the GCS backend.
+  - name: 'hashicorp/terraform:1.8.5'
+    id: 'Terraform Init'
+    entrypoint: 'terraform'
+    args:
+      - 'init'
+      - '-backend-config=bucket=${_TERRAFORM_STATE_BUCKET}'
+
+  # 2. Plan Terraform Changes
+  # This step creates an execution plan and shows what changes will be made.
+  - name: 'hashicorp/terraform:1.8.5'
+    id: 'Terraform Plan'
+    entrypoint: 'terraform'
+    args:
+      - 'plan'
+      - '-var=project_id=${PROJECT_ID}'
+      - '-var=github_repo_name=${_GITHUB_REPO_NAME}'
+      - '-var=github_branch_name=${BRANCH_NAME}'
+      - '-out=tfplan'
+
+  # 3. Apply Terraform Changes
+  # This step applies the changes defined in the plan to create/update the infrastructure.
+  - name: 'hashicorp/terraform:1.8.5'
+    id: 'Terraform Apply'
+    entrypoint: 'terraform'
+    args:
+      - 'apply'
+      - '-auto-approve'
+      - 'tfplan'
+
+# Substitution variables that can be configured in the Cloud Build Trigger.
+substitutions:
+  _TERRAFORM_STATE_BUCKET: 'demoapp_tfstate' # <-- IMPORTANT: Change this
+  _GITHUB_REPO_NAME: 'madderist/demo'   # <-- IMPORTANT: Change this
+
+# This specifies that the build should use the Terraform state bucket.
+options:
+  logging: CLOUD_LOGGING_ONLY
