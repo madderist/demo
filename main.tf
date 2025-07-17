@@ -52,7 +52,7 @@ resource "google_cloudfunctions2_function" "hello_world" {
       # This points to a repository connected via Cloud Build
       repo_source {
         project_id  = var.project_id
-        repo_name   = var.github_repo_name   // e.g., "your-github-username/your-repo-name"
+        repo_name   = regex("repositories/([^/]+)$", var.github_repo_name)[0]    // e.g., "your-github-username/your-repo-name"
         branch_name = var.github_branch_name // e.g., "main"
         dir         = "function_source"      // The subdirectory containing the function code
       }
