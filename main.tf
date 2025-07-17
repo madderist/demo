@@ -28,7 +28,6 @@ resource "google_project_service" "project_services" {
 
   project                    = var.project_id
   service                    = each.key
-  disable_dependency_handling = true
 }
 
 # Create a dedicated service account for the function to run as
