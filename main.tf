@@ -65,7 +65,7 @@ resource "google_cloudfunctions2_function" "hello_world" {
     available_memory   = "128Mi"
     timeout_seconds    = 30
     # This makes the function publicly accessible
-    ingress_settings = "ALLOW_ALL_TRAFFIC"
+    ingress_settings = "ALLOW_ALL"
     # Run the function using the dedicated service account
     service_account_email = google_service_account.function_sa.email
   }
